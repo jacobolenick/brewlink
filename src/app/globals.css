@@ -1,24 +1,24 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #07070d;
-  --bg-card: #0f0f1a;
-  --bg-elevated: #17172a;
-  --border: #1e1e32;
-  --border-bright: #2e2e50;
-  --text: #e4e4f0;
-  --text-muted: #7878a0;
-  --text-faint: #45455a;
-  --accent: #7c6af7;
-  --accent-hover: #6a58e8;
-  --accent-glow: rgba(124, 106, 247, 0.2);
-  --green: #22c55e;
-  --green-bg: rgba(34, 197, 94, 0.08);
-  --green-border: rgba(34, 197, 94, 0.2);
-  --red: #ef4444;
-  --red-bg: rgba(239, 68, 68, 0.08);
-  --red-border: rgba(239, 68, 68, 0.2);
-  --amber: #f59e0b;
+  --bg: #f9fafb;
+  --bg-card: #ffffff;
+  --bg-elevated: #f3f4f6;
+  --border: #e5e7eb;
+  --border-bright: #d1d5db;
+  --text: #111827;
+  --text-muted: #6b7280;
+  --text-faint: #9ca3af;
+  --accent: #f97316;
+  --accent-hover: #ea580c;
+  --accent-glow: rgba(249, 115, 22, 0.15);
+  --green: #16a34a;
+  --green-bg: rgba(22, 163, 74, 0.08);
+  --green-border: rgba(22, 163, 74, 0.2);
+  --red: #dc2626;
+  --red-bg: rgba(220, 38, 38, 0.08);
+  --red-border: rgba(220, 38, 38, 0.2);
+  --amber: #d97706;
 }
 
 * {
@@ -54,7 +54,7 @@ body {
 }
 
 ::selection {
-  background: rgba(124, 106, 247, 0.35);
+  background: rgba(249, 115, 22, 0.2);
 }
 
 input,

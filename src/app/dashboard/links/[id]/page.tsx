@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { formatDateTime, getClickRate } from "@/lib/utils";
 import ClickChart from "@/components/ClickChart";
+import { ArrowLeft, TrendingUp, TrendingDown, Minus, ExternalLink } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -77,8 +78,7 @@ export default async function LinkDetailPage({
   const trend = getClickRate(clicksThisWeek, clicksLastWeek);
   const chartData = buildChartData(link.clicks, 30);
 
-  const baseUrl =
-    process.env.NEXTAUTH_URL ?? "http://localhost:3000";
+  const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
   const shortUrl = `${baseUrl}/${link.slug}`;
 
   return (
@@ -88,7 +88,8 @@ export default async function LinkDetailPage({
         href="/dashboard/links"
         style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, color: "var(--text-muted)", textDecoration: "none", marginBottom: "1.5rem" }}
       >
-        ← Back to links
+        <ArrowLeft size={14} />
+        Back to links
       </Link>
 
       {/* Header */}
@@ -99,16 +100,17 @@ export default async function LinkDetailPage({
           </h1>
           <TrendBadge trend={trend} />
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <a
             href={shortUrl}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ fontSize: 14, color: "var(--accent)", textDecoration: "none", fontWeight: 500 }}
+            style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 14, color: "var(--accent)", textDecoration: "none", fontWeight: 500 }}
           >
             {shortUrl}
+            <ExternalLink size={12} />
           </a>
-          <span style={{ color: "var(--border-bright)" }}>→</span>
+          <span style={{ color: "var(--border-bright)", fontSize: 12 }}>→</span>
           <span style={{ fontSize: 13, color: "var(--text-faint)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 300 }}>
             {link.originalUrl}
           </span>
@@ -146,7 +148,7 @@ export default async function LinkDetailPage({
 
         {link.clicks.length === 0 ? (
           <div style={{ textAlign: "center", padding: "2rem", color: "var(--text-muted)", fontSize: 14 }}>
-            No clicks yet — share your link to start seeing data!
+            No clicks yet — share your link to start seeing data.
           </div>
         ) : (
           <div style={{ overflowX: "auto" }}>
@@ -163,6 +165,7 @@ export default async function LinkDetailPage({
                         fontWeight: 500,
                         borderBottom: "1px solid var(--border)",
                         whiteSpace: "nowrap",
+                        fontSize: 12,
                       }}
                     >
                       {h}
@@ -209,6 +212,9 @@ function TrendBadge({ trend }: { trend: { rate: number; positive: boolean; neutr
   if (trend.neutral) {
     return (
       <span style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 4,
         padding: "3px 10px",
         borderRadius: 20,
         fontSize: 12,
@@ -217,6 +223,7 @@ function TrendBadge({ trend }: { trend: { rate: number; positive: boolean; neutr
         color: "var(--text-faint)",
         border: "1px solid var(--border)",
       }}>
+        <Minus size={11} />
         No change
       </span>
     );
@@ -225,7 +232,7 @@ function TrendBadge({ trend }: { trend: { rate: number; positive: boolean; neutr
     <span style={{
       display: "inline-flex",
       alignItems: "center",
-      gap: 4,
+      gap: 5,
       padding: "4px 12px",
       borderRadius: 20,
       fontSize: 13,
@@ -234,7 +241,8 @@ function TrendBadge({ trend }: { trend: { rate: number; positive: boolean; neutr
       border: `1px solid ${trend.positive ? "var(--green-border)" : "var(--red-border)"}`,
       color: trend.positive ? "var(--green)" : "var(--red)",
     }}>
-      {trend.positive ? "▲" : "▼"} {trend.rate}% vs last week
+      {trend.positive ? <TrendingUp size={13} /> : <TrendingDown size={13} />}
+      {trend.rate}% vs last week
     </span>
   );
 }

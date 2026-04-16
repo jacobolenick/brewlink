@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { X, AlertCircle } from "lucide-react";
 
 interface CreateLinkModalProps {
   onClose: () => void;
@@ -61,7 +62,7 @@ export default function CreateLinkModal({ onClose, onCreate }: CreateLinkModalPr
     >
       <div style={modalStyle}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
-          <h2 style={{ fontSize: 18, fontWeight: 700, color: "var(--text)", letterSpacing: "-0.02em" }}>
+          <h2 style={{ fontSize: 17, fontWeight: 700, color: "var(--text)", letterSpacing: "-0.02em" }}>
             Create new link
           </h2>
           <button
@@ -69,18 +70,17 @@ export default function CreateLinkModal({ onClose, onCreate }: CreateLinkModalPr
             style={{
               width: 28,
               height: 28,
-              borderRadius: 8,
+              borderRadius: 7,
               border: "1px solid var(--border)",
               background: "transparent",
               color: "var(--text-muted)",
               cursor: "pointer",
-              fontSize: 16,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            ×
+            <X size={14} />
           </button>
         </div>
 
@@ -143,6 +143,9 @@ export default function CreateLinkModal({ onClose, onCreate }: CreateLinkModalPr
 
           {error && (
             <div style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
               padding: "10px 14px",
               borderRadius: 10,
               background: "var(--red-bg)",
@@ -150,7 +153,8 @@ export default function CreateLinkModal({ onClose, onCreate }: CreateLinkModalPr
               color: "var(--red)",
               fontSize: 13,
             }}>
-              ⚠ {error}
+              <AlertCircle size={14} style={{ flexShrink: 0 }} />
+              {error}
             </div>
           )}
 
@@ -160,7 +164,7 @@ export default function CreateLinkModal({ onClose, onCreate }: CreateLinkModalPr
               onClick={onClose}
               style={{
                 padding: "9px 18px",
-                borderRadius: 10,
+                borderRadius: 9,
                 border: "1px solid var(--border-bright)",
                 background: "transparent",
                 color: "var(--text-muted)",
@@ -175,7 +179,7 @@ export default function CreateLinkModal({ onClose, onCreate }: CreateLinkModalPr
               disabled={loading}
               style={{
                 padding: "9px 20px",
-                borderRadius: 10,
+                borderRadius: 9,
                 border: "none",
                 background: "var(--accent)",
                 color: "white",
@@ -183,7 +187,6 @@ export default function CreateLinkModal({ onClose, onCreate }: CreateLinkModalPr
                 fontWeight: 600,
                 cursor: loading ? "not-allowed" : "pointer",
                 opacity: loading ? 0.7 : 1,
-                boxShadow: "0 4px 16px var(--accent-glow)",
               }}
             >
               {loading ? "Creating…" : "Create link"}
@@ -198,7 +201,7 @@ export default function CreateLinkModal({ onClose, onCreate }: CreateLinkModalPr
 const overlayStyle: React.CSSProperties = {
   position: "fixed",
   inset: 0,
-  background: "rgba(0,0,0,0.7)",
+  background: "rgba(0,0,0,0.35)",
   backdropFilter: "blur(4px)",
   display: "flex",
   alignItems: "center",
@@ -209,12 +212,12 @@ const overlayStyle: React.CSSProperties = {
 
 const modalStyle: React.CSSProperties = {
   background: "var(--bg-card)",
-  border: "1px solid var(--border-bright)",
+  border: "1px solid var(--border)",
   borderRadius: 16,
   padding: "1.75rem",
   width: "100%",
   maxWidth: 480,
-  boxShadow: "0 24px 64px rgba(0,0,0,0.6)",
+  boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
 };
 
 const fieldStyle: React.CSSProperties = {
@@ -232,7 +235,7 @@ const labelStyle: React.CSSProperties = {
 const inputStyle: React.CSSProperties = {
   width: "100%",
   padding: "10px 14px",
-  borderRadius: 10,
+  borderRadius: 9,
   border: "1px solid var(--border)",
   background: "var(--bg-elevated)",
   color: "var(--text)",

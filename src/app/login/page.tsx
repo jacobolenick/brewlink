@@ -4,6 +4,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Link2, AlertCircle } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -35,9 +36,10 @@ export default function LoginPage() {
   return (
     <div style={styles.page}>
       <div style={styles.card}>
-        {/* Logo */}
         <div style={styles.logoRow}>
-          <div style={styles.logoMark}>B</div>
+          <div style={styles.logoMark}>
+            <Link2 size={16} strokeWidth={2.5} color="white" />
+          </div>
           <span style={styles.logoText}>BrewLink</span>
         </div>
 
@@ -75,18 +77,15 @@ export default function LoginPage() {
 
           {error && (
             <div style={styles.errorBox}>
-              <span>⚠</span> {error}
+              <AlertCircle size={14} style={{ flexShrink: 0 }} />
+              {error}
             </div>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            style={{
-              ...styles.submitBtn,
-              opacity: loading ? 0.7 : 1,
-              cursor: loading ? "not-allowed" : "pointer",
-            }}
+            style={{ ...styles.submitBtn, opacity: loading ? 0.7 : 1, cursor: loading ? "not-allowed" : "pointer" }}
           >
             {loading ? "Signing in…" : "Sign in"}
           </button>
@@ -94,9 +93,7 @@ export default function LoginPage() {
 
         <p style={styles.switchText}>
           Don&apos;t have an account?{" "}
-          <Link href="/signup" style={styles.link}>
-            Create one free
-          </Link>
+          <Link href="/signup" style={styles.link}>Create one free</Link>
         </p>
       </div>
     </div>
@@ -119,6 +116,7 @@ const styles: Record<string, React.CSSProperties> = {
     border: "1px solid var(--border)",
     borderRadius: 16,
     padding: "2.5rem",
+    boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
   },
   logoRow: {
     display: "flex",
@@ -135,10 +133,6 @@ const styles: Record<string, React.CSSProperties> = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: 15,
-    fontWeight: 800,
-    color: "white",
-    boxShadow: "0 0 20px var(--accent-glow)",
   },
   logoText: {
     fontWeight: 700,
@@ -207,7 +201,6 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 15,
     fontWeight: 600,
     marginTop: 4,
-    boxShadow: "0 4px 24px var(--accent-glow)",
     transition: "all 0.15s",
   },
   switchText: {

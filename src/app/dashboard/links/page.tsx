@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { formatDate, getClickRate } from "@/lib/utils";
 import CreateLinkModal from "@/components/CreateLinkModal";
+import { Link2, Copy, BarChart2, Trash2, TrendingUp, TrendingDown, Plus, Check } from "lucide-react";
 
 interface LinkData {
   id: string;
@@ -66,7 +67,10 @@ export default function LinksPage() {
         <button
           onClick={() => setShowCreate(true)}
           style={{
-            padding: "9px 18px",
+            display: "flex",
+            alignItems: "center",
+            gap: 7,
+            padding: "9px 16px",
             borderRadius: 10,
             border: "none",
             background: "var(--accent)",
@@ -74,13 +78,10 @@ export default function LinksPage() {
             fontSize: 14,
             fontWeight: 600,
             cursor: "pointer",
-            boxShadow: "0 4px 20px var(--accent-glow)",
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
           }}
         >
-          + New Link
+          <Plus size={16} strokeWidth={2.5} />
+          New Link
         </button>
       </div>
 
@@ -90,7 +91,7 @@ export default function LinksPage() {
       ) : links.length === 0 ? (
         <EmptyState onCreate={() => setShowCreate(true)} />
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}>
           {links.map((link) => {
             const now = new Date();
             const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -113,40 +114,45 @@ export default function LinksPage() {
                 style={{
                   background: "var(--bg-card)",
                   border: "1px solid var(--border)",
-                  borderRadius: 14,
-                  padding: "1.1rem 1.25rem",
+                  borderRadius: 12,
+                  padding: "1rem 1.25rem",
                   display: "flex",
                   alignItems: "center",
                   gap: "1rem",
-                  transition: "border-color 0.15s",
+                  transition: "border-color 0.15s, box-shadow 0.15s",
                 }}
-                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "var(--border-bright)")}
-                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "var(--border)")}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.borderColor = "var(--border-bright)";
+                  (e.currentTarget as HTMLElement).style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
+                  (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                }}
               >
-                {/* Favicon / icon */}
+                {/* Icon */}
                 <div style={{
                   width: 38,
                   height: 38,
-                  borderRadius: 10,
+                  borderRadius: 9,
                   background: "var(--bg-elevated)",
                   border: "1px solid var(--border)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: 16,
                   flexShrink: 0,
                 }}>
-                  🔗
+                  <Link2 size={16} color="var(--text-muted)" />
                 </div>
 
                 {/* Link info */}
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}>
                     <span style={{ fontSize: 14, fontWeight: 600, color: "var(--text)" }}>
                       {link.title || `/${link.slug}`}
                     </span>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                     <span style={{ fontSize: 12, color: "var(--accent)", fontWeight: 500 }}>
                       {origin}/{link.slug}
                     </span>
@@ -158,7 +164,7 @@ export default function LinksPage() {
                 </div>
 
                 {/* Stats */}
-                <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", flexShrink: 0 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "1.25rem", flexShrink: 0 }}>
                   {/* Trend badge */}
                   {!trend.neutral && (
                     <div style={{
@@ -173,12 +179,13 @@ export default function LinksPage() {
                       border: `1px solid ${trend.positive ? "var(--green-border)" : "var(--red-border)"}`,
                       color: trend.positive ? "var(--green)" : "var(--red)",
                     }}>
-                      {trend.positive ? "▲" : "▼"} {trend.rate}%
+                      {trend.positive ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
+                      {trend.rate}%
                     </div>
                   )}
 
                   {/* Total clicks */}
-                  <div style={{ textAlign: "center" }}>
+                  <div style={{ textAlign: "center", minWidth: 48 }}>
                     <div style={{ fontSize: 20, fontWeight: 700, color: "var(--text)", lineHeight: 1 }}>
                       {link._count.clicks}
                     </div>
@@ -186,7 +193,7 @@ export default function LinksPage() {
                   </div>
 
                   {/* Date */}
-                  <div style={{ textAlign: "right" }}>
+                  <div style={{ textAlign: "right", minWidth: 72 }}>
                     <div style={{ fontSize: 12, color: "var(--text-faint)" }}>
                       {formatDate(link.createdAt)}
                     </div>
@@ -194,32 +201,30 @@ export default function LinksPage() {
                 </div>
 
                 {/* Actions */}
-                <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-                  <button
+                <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
+                  <IconBtn
                     onClick={() => copyLink(link.slug)}
                     title="Copy link"
-                    style={iconBtnStyle(copied === link.slug)}
+                    active={copied === link.slug}
+                    activeColor="var(--green)"
                   >
-                    {copied === link.slug ? "✓" : "⎘"}
-                  </button>
+                    {copied === link.slug ? <Check size={14} /> : <Copy size={14} />}
+                  </IconBtn>
 
                   <Link href={`/dashboard/links/${link.id}`} style={{ textDecoration: "none" }}>
-                    <button title="View analytics" style={iconBtnStyle(false)}>
-                      📊
-                    </button>
+                    <IconBtn title="View analytics">
+                      <BarChart2 size={14} />
+                    </IconBtn>
                   </Link>
 
-                  <button
+                  <IconBtn
                     onClick={() => deleteLink(link.id)}
                     disabled={deletingId === link.id}
                     title="Delete link"
-                    style={{
-                      ...iconBtnStyle(false),
-                      color: "var(--red)",
-                    }}
+                    danger
                   >
-                    {deletingId === link.id ? "…" : "🗑"}
-                  </button>
+                    <Trash2 size={14} />
+                  </IconBtn>
                 </div>
               </div>
             );
@@ -241,36 +246,59 @@ export default function LinksPage() {
   );
 }
 
-function iconBtnStyle(active: boolean): React.CSSProperties {
-  return {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
-    border: "1px solid var(--border)",
-    background: active ? "var(--bg-elevated)" : "transparent",
-    color: active ? "var(--green)" : "var(--text-muted)",
-    fontSize: 14,
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    transition: "all 0.15s",
-  };
+function IconBtn({
+  children,
+  onClick,
+  title,
+  active,
+  activeColor,
+  danger,
+  disabled,
+}: {
+  children: React.ReactNode;
+  onClick?: () => void;
+  title?: string;
+  active?: boolean;
+  activeColor?: string;
+  danger?: boolean;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      title={title}
+      disabled={disabled}
+      style={{
+        width: 32,
+        height: 32,
+        borderRadius: 8,
+        border: "1px solid var(--border)",
+        background: active ? "rgba(22,163,74,0.06)" : danger ? "transparent" : "transparent",
+        color: active ? (activeColor ?? "var(--green)") : danger ? "var(--red)" : "var(--text-muted)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: disabled ? "not-allowed" : "pointer",
+        opacity: disabled ? 0.5 : 1,
+        transition: "all 0.15s",
+      }}
+    >
+      {children}
+    </button>
+  );
 }
 
 function LoadingSkeleton() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}>
       {[1, 2, 3].map((i) => (
         <div
           key={i}
           style={{
             background: "var(--bg-card)",
             border: "1px solid var(--border)",
-            borderRadius: 14,
-            padding: "1.1rem 1.25rem",
-            height: 72,
-            animation: "pulse 1.5s ease-in-out infinite",
+            borderRadius: 12,
+            height: 70,
           }}
         />
       ))}
@@ -280,9 +308,21 @@ function LoadingSkeleton() {
 
 function EmptyState({ onCreate }: { onCreate: () => void }) {
   return (
-    <div style={{ textAlign: "center", padding: "4rem 2rem" }}>
-      <div style={{ fontSize: 48, marginBottom: 16 }}>🔗</div>
-      <h2 style={{ fontSize: 20, fontWeight: 700, color: "var(--text)", marginBottom: 8 }}>
+    <div style={{ textAlign: "center", padding: "5rem 2rem" }}>
+      <div style={{
+        width: 56,
+        height: 56,
+        borderRadius: 16,
+        background: "var(--bg-elevated)",
+        border: "1px solid var(--border)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        margin: "0 auto 16px",
+      }}>
+        <Link2 size={24} color="var(--text-faint)" />
+      </div>
+      <h2 style={{ fontSize: 18, fontWeight: 700, color: "var(--text)", marginBottom: 8, letterSpacing: "-0.02em" }}>
         No links yet
       </h2>
       <p style={{ fontSize: 14, color: "var(--text-muted)", marginBottom: 24 }}>
@@ -291,7 +331,10 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
       <button
         onClick={onCreate}
         style={{
-          padding: "10px 24px",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 7,
+          padding: "10px 20px",
           borderRadius: 10,
           border: "none",
           background: "var(--accent)",
@@ -299,9 +342,9 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
           fontSize: 14,
           fontWeight: 600,
           cursor: "pointer",
-          boxShadow: "0 4px 20px var(--accent-glow)",
         }}
       >
+        <Plus size={15} strokeWidth={2.5} />
         Create your first link
       </button>
     </div>

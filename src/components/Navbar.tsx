@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { cn } from "@/lib/utils";
+import { Link2 } from "lucide-react";
 
 interface NavbarProps {
   userName?: string | null;
@@ -41,13 +41,10 @@ export default function Navbar({ userName }: NavbarProps) {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 14,
-              fontWeight: 700,
               color: "white",
-              boxShadow: "0 0 16px var(--accent-glow)",
             }}
           >
-            B
+            <Link2 size={15} strokeWidth={2.5} />
           </div>
           <span style={{ fontWeight: 700, fontSize: 16, color: "var(--text)", letterSpacing: "-0.02em" }}>
             BrewLink
@@ -117,8 +114,8 @@ function NavLink({
         borderRadius: 8,
         fontSize: 13,
         fontWeight: 500,
-        color: active ? "var(--text)" : "var(--text-muted)",
-        background: active ? "var(--bg-elevated)" : "transparent",
+        color: active ? "var(--accent)" : "var(--text-muted)",
+        background: active ? "rgba(249,115,22,0.08)" : "transparent",
         textDecoration: "none",
         transition: "all 0.15s",
       }}

@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { formatDateTime, getClickRate } from "@/lib/utils";
+import { Link2, MousePointerClick, Calendar, TrendingUp, TrendingDown } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -62,7 +63,7 @@ export default async function DashboardPage() {
       {/* Header */}
       <div style={{ marginBottom: "2rem" }}>
         <h1 style={{ fontSize: 26, fontWeight: 700, color: "var(--text)", letterSpacing: "-0.02em", marginBottom: 6 }}>
-          Hey, {firstName} 👋
+          Hey, {firstName}
         </h1>
         <p style={{ color: "var(--text-muted)", fontSize: 14 }}>
           Here&apos;s what&apos;s happening with your links this week.
@@ -71,22 +72,9 @@ export default async function DashboardPage() {
 
       {/* Stats row */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem", marginBottom: "2rem" }}>
-        <StatCard
-          label="Total Links"
-          value={totalLinks}
-          icon="🔗"
-        />
-        <StatCard
-          label="Clicks (7 days)"
-          value={totalClicksCurrent}
-          icon="👆"
-          trend={clickRate}
-        />
-        <StatCard
-          label="Prev. 7 days"
-          value={totalClicksPrevious}
-          icon="📅"
-        />
+        <StatCard label="Total Links" value={totalLinks} icon={<Link2 size={18} color="var(--accent)" />} />
+        <StatCard label="Clicks (7 days)" value={totalClicksCurrent} icon={<MousePointerClick size={18} color="var(--accent)" />} trend={clickRate} />
+        <StatCard label="Prev. 7 days" value={totalClicksPrevious} icon={<Calendar size={18} color="var(--text-muted)" />} />
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
@@ -94,7 +82,7 @@ export default async function DashboardPage() {
         <div style={cardStyle}>
           <div style={cardHeader}>
             <span style={cardTitle}>Recent Links</span>
-            <Link href="/dashboard/links" style={seeAllStyle}>See all →</Link>
+            <Link href="/dashboard/links" style={seeAllStyle}>See all</Link>
           </div>
           {links.length === 0 ? (
             <EmptyState
@@ -162,43 +150,54 @@ function StatCard({
 }: {
   label: string;
   value: number;
-  icon: string;
+  icon: React.ReactNode;
   trend?: { rate: number; positive: boolean; neutral: boolean };
 }) {
   return (
     <div style={cardStyle}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
-        <span style={{ fontSize: 20 }}>{icon}</span>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
+        <div style={{
+          width: 36,
+          height: 36,
+          borderRadius: 9,
+          background: "var(--bg-elevated)",
+          border: "1px solid var(--border)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+          {icon}
+        </div>
         {trend && !trend.neutral && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 4,
-              padding: "3px 8px",
-              borderRadius: 20,
-              fontSize: 12,
-              fontWeight: 600,
-              background: trend.positive ? "var(--green-bg)" : "var(--red-bg)",
-              border: `1px solid ${trend.positive ? "var(--green-border)" : "var(--red-border)"}`,
-              color: trend.positive ? "var(--green)" : "var(--red)",
-            }}
-          >
-            {trend.positive ? "▲" : "▼"} {trend.rate}%
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
+            padding: "3px 8px",
+            borderRadius: 20,
+            fontSize: 12,
+            fontWeight: 600,
+            background: trend.positive ? "var(--green-bg)" : "var(--red-bg)",
+            border: `1px solid ${trend.positive ? "var(--green-border)" : "var(--red-border)"}`,
+            color: trend.positive ? "var(--green)" : "var(--red)",
+          }}>
+            {trend.positive
+              ? <TrendingUp size={11} />
+              : <TrendingDown size={11} />}
+            {trend.rate}%
           </div>
         )}
         {trend?.neutral && (
-          <div
-            style={{
-              padding: "3px 8px",
-              borderRadius: 20,
-              fontSize: 12,
-              fontWeight: 600,
-              background: "var(--bg-elevated)",
-              color: "var(--text-faint)",
-            }}
-          >
-            — 0%
+          <div style={{
+            padding: "3px 8px",
+            borderRadius: 20,
+            fontSize: 12,
+            fontWeight: 600,
+            background: "var(--bg-elevated)",
+            color: "var(--text-faint)",
+            border: "1px solid var(--border)",
+          }}>
+            0%
           </div>
         )}
       </div>
@@ -218,27 +217,29 @@ function LinkRow({ link }: { link: { id: string; slug: string; title: string | n
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        padding: "10px 12px",
-        borderRadius: 10,
+        padding: "9px 10px",
+        borderRadius: 8,
         textDecoration: "none",
         transition: "background 0.15s",
-        cursor: "pointer",
       }}
-      className="hover-row"
     >
-      <div style={{ minWidth: 0 }}>
-        <div style={{ fontSize: 13, fontWeight: 600, color: "var(--accent)", marginBottom: 2 }}>
-          /{link.slug}
-        </div>
-        <div style={{ fontSize: 12, color: "var(--text-faint)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 220 }}>
-          {link.title || link.originalUrl}
+      <div style={{ minWidth: 0, display: "flex", alignItems: "center", gap: 10 }}>
+        <Link2 size={14} color="var(--text-faint)" style={{ flexShrink: 0 }} />
+        <div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--accent)", marginBottom: 1 }}>
+            /{link.slug}
+          </div>
+          <div style={{ fontSize: 12, color: "var(--text-faint)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 200 }}>
+            {link.title || link.originalUrl}
+          </div>
         </div>
       </div>
       <div style={{
-        fontSize: 13,
+        fontSize: 12,
         fontWeight: 600,
-        color: "var(--text)",
+        color: "var(--text-muted)",
         background: "var(--bg-elevated)",
+        border: "1px solid var(--border)",
         padding: "3px 10px",
         borderRadius: 20,
         whiteSpace: "nowrap",
@@ -253,22 +254,33 @@ function LinkRow({ link }: { link: { id: string; slug: string; title: string | n
 function EmptyState({ text, hint, action, actionLabel }: { text: string; hint: string; action?: string; actionLabel?: string }) {
   return (
     <div style={{ textAlign: "center", padding: "2rem 1rem" }}>
-      <div style={{ fontSize: 32, marginBottom: 12 }}>🌱</div>
-      <div style={{ fontSize: 15, fontWeight: 600, color: "var(--text)", marginBottom: 6 }}>{text}</div>
+      <div style={{
+        width: 44,
+        height: 44,
+        borderRadius: 12,
+        background: "var(--bg-elevated)",
+        border: "1px solid var(--border)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        margin: "0 auto 12px",
+      }}>
+        <Link2 size={20} color="var(--text-faint)" />
+      </div>
+      <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text)", marginBottom: 4 }}>{text}</div>
       <div style={{ fontSize: 13, color: "var(--text-muted)", marginBottom: action ? 16 : 0 }}>{hint}</div>
       {action && actionLabel && (
         <Link
           href={action}
           style={{
             display: "inline-block",
-            padding: "8px 16px",
+            padding: "7px 16px",
             borderRadius: 8,
             background: "var(--accent)",
             color: "white",
             fontSize: 13,
             fontWeight: 600,
             textDecoration: "none",
-            boxShadow: "0 4px 16px var(--accent-glow)",
           }}
         >
           {actionLabel}
@@ -314,18 +326,18 @@ const activityRow: React.CSSProperties = {
 };
 
 const clickDot: React.CSSProperties = {
-  width: 8,
-  height: 8,
+  width: 7,
+  height: 7,
   borderRadius: "50%",
   background: "var(--accent)",
   flexShrink: 0,
-  boxShadow: "0 0 6px var(--accent-glow)",
 };
 
 const refererBadge: React.CSSProperties = {
   fontSize: 11,
   color: "var(--text-faint)",
   background: "var(--bg-elevated)",
+  border: "1px solid var(--border)",
   padding: "2px 6px",
   borderRadius: 4,
   maxWidth: 100,
