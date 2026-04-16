@@ -34,7 +34,8 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ id: user.id, email: user.email }, { status: 201 });
-  } catch {
+  } catch (err) {
+    console.error("[/api/register] error:", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
