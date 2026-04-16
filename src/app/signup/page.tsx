@@ -32,7 +32,12 @@ export default function SignupPage() {
       return;
     }
 
-    await signIn("credentials", { email, password, redirect: false });
+    const signInResult = await signIn("credentials", { email, password, redirect: false });
+    if (signInResult?.error) {
+      setError("Account created but sign-in failed. Please go to the login page.");
+      setLoading(false);
+      return;
+    }
     router.push("/dashboard");
   }
 
